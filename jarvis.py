@@ -2,13 +2,9 @@ import datetime
 import webbrowser
 import os
 # import pyttsx3
-
 # engine = pyttsx3.init()
-
 # engine.say("Your Text")
-
 # engine.runAndWait()
-
 # os.system("say 'Your Command'")
 
 def salam():
