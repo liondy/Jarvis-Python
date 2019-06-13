@@ -1,11 +1,22 @@
 import datetime
 import webbrowser
 import os
-# import pyttsx3
-# engine = pyttsx3.init()
-# engine.say("Your Text")
-# engine.runAndWait()
-# os.system("say 'Your Command'")
+import speech_recognition as sr
+
+def command():
+    r = sr.Recognizer()
+
+    with sr.Microphone() as source:
+        print('Listening..')
+        r.pause_threshold = 1
+        audio = r.listen(source)
+    try:
+        query = r.recognize_google(audio)
+        print(format(query))
+    except:
+        print("Cannot recognize! Try to type the command")
+        query = str(input('Command: '))
+    return query
 
 def salam():
     currentH = int(datetime.datetime.now().hour)
@@ -32,21 +43,24 @@ def greet():
 salam()
 print("Hello, I am Jarvis, I am your digital assistant")
 print("Who are you?")
-nama = input()
+
+nama=command()
+
 print("Hello, " + nama + "! How can I help you?")
 
 while (True):
-    query = input()
+
+    query = command()
     
-    if query == "open youtube":
+    if query == "open YouTube":
         webbrowser.open("http://youtube.com")
         print("opening www.youtube.com")
 
-    elif query == "open google":
+    elif query == "open Google":
         webbrowser.open("http://google.com")
         print("opening www.google.com")
 
-    elif query == "open facebook":
+    elif query == "open Facebook":
         webbrowser.open("http://facebook.com")
         print("opening www.facebook.com")
 
@@ -55,20 +69,22 @@ while (True):
         print("chrome closed")
 
     elif query == "search":
-        google = input("Google search: ")
+        print("Google search: ")
+        google = command()
         webbrowser.open_new_tab('http://www.google.com/search?btnG=1&q=%s' % google)
 
     elif query == "greet me":
         greet()
 
-    elif query == "end":
+    elif query == "bye":
         break
 
     elif query == "hello":
         print("Hello, "+nama)
 
     else:
-        print("Searching...Query cannot be found")
+        print("Searching...Query cannot be found! Here are some references from Google")
+        webbrowser.open_new_tab('http://www.google.com/search?btnG=1&q=%s' % query)
     
     print("Waiting for another command...")
         
