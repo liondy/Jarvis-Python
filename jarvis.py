@@ -2,89 +2,102 @@ import datetime
 import webbrowser
 import os
 import speech_recognition as sr
+from gtts import gTTS
+from time import ctime
+
+def speak(audio):
+    tts = gTTS(text=audio, lang='en')
+    tts.save("audio.mp3")
+    os.system("mpg321 audio.mp3")
 
 def command():
     r = sr.Recognizer()
 
     with sr.Microphone() as source:
-        print('Listening..')
         audio = r.listen(source)
+    query=""
     try:
         query = r.recognize_google(audio)
         print(format(query))
     except:
-        print("Cannot recognize! Try to type the command")
+        speak("Cannot recognize! Try to type the command")
         query = str(input('Command: '))
     return query
 
 def salam():
     currentH = int(datetime.datetime.now().hour)
     if currentH >= 0 and currentH < 12:
-        print("Good Morning!")
+        speak("Good Morning!")
 
     if currentH >= 12 and currentH < 18:
-        print("Good Afternoon!")
+        speak("Good Afternoon!")
 
     if currentH >= 18 and currentH !=0:
-        print("Good Evening!")
+        speak("Good Evening!")
 
 def greet():
     currentH = int(datetime.datetime.now().hour)
+    speak("Hello")
     if currentH >= 0 and currentH < 12:
-        print("Good Morning, "+ nama +"!")
+        speak("Good Morning, "+ nama +"!")
 
     if currentH >= 12 and currentH < 18:
-        print("Good Afternoon, "+ nama +"!")
+        speak("Good Afternoon, "+ nama +"!")
 
     if currentH >= 18 and currentH !=0:
-        print("Good Evening, "+ nama +"!")
+        speak("Good Evening, "+ nama +"!")
 
-salam()
-print("Hello, I am Jarvis, I am your digital assistant")
-print("Who are you?")
+def jarvis(query):
+    if "how are you" in query:
+        speak("I am fine")
 
-nama=command()
-
-print("Hello, " + nama + "! How can I help you?")
-
-while (True):
-
-    query = command()
+    elif "time" in query:
+        speak(ctime())
     
-    if query == "open YouTube":
-        webbrowser.open("http://youtube.com")
-        print("opening www.youtube.com")
+    elif "where is" in query or "where are" in query:
+        query = query.split(" ")
+        location = query[2]
+        speak("Hold on "+ nama + ", I will show you where " + location + " is.")
+        webbrowser.open("https://www.google.nl/maps/place/" + location + "/&amp;")
 
-    elif query == "open Google":
-        webbrowser.open("http://google.com")
-        print("opening www.google.com")
+    elif "open" in query:
+        query = query.split(" ")
+        web = query[1]
+        webbrowser.open("http://"+web+".com")
+        speak("opening"+web+".com")
 
-    elif query == "open Facebook":
-        webbrowser.open("http://facebook.com")
-        print("opening www.facebook.com")
-
-    elif query == "close browser":
+    elif "close browser" in query:
         os.system("pkill chrome")
-        print("chrome closed")
+        speak("chrome closed")
 
-    elif query == "search":
-        print("Google search: ")
+    elif "search" in query:
+        speak("Google search: ")
         google = command()
         webbrowser.open_new_tab('http://www.google.com/search?btnG=1&q=%s' % google)
 
-    elif query == "greet me":
+    elif "hello" in query:
         greet()
 
-    elif query == "bye":
-        break
-
-    elif query == "hello":
-        print("Hello, "+nama)
+    elif "name" in query:
+        speak("Hello "+nama+", my name is Jarvis")
 
     else:
-        print("Searching...Query cannot be found! Here are some references from Google")
+        speak("Searching...Query cannot be found! Here are some references from Google")
         webbrowser.open_new_tab('http://www.google.com/search?btnG=1&q=%s' % query)
-    
-    print("Waiting for another command...")
+
+salam()
+speak("Hello, I am Jarvis, I am your digital assistant")
+speak("Tell me your name")
+
+nama=command()
+
+speak("Hello, " + nama + "! How can I help you?")
+
+while (True):
+    query = command()
+    if "bye" in query or "goodbye" in query or "enough" in query:
+        break
+    jarvis(query)
+    speak("Waiting for another command..")
         
-print("Bye, have a good day.")
+speak("Goodbye"+nama+", have a good day.")
